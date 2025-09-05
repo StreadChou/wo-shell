@@ -1,93 +1,31 @@
 <script setup lang="ts">
+import { computed, defineProps } from "vue";
+import { useDocumentsStore, type Document, type TreeNode } from "src/stores/documentsStore";
 
-import { ref, computed } from "vue";
-
-interface TreeNode {
-  label: string;
-  icon?: string;
-  children?: TreeNode[];
-  id?: string;
-  level?: number;
+interface Props {
+  document: Document;
 }
 
-const expandedNodes = ref<Set<string>>(new Set());
+const props = defineProps<Props>();
+const documentsStore = useDocumentsStore();
 
-const treeData: TreeNode[] = [
-  {
-    label: '保存的文档(账号密码合集)',
-    id: 'root',
-    children: [
-      {
-        label: '链接列表',
-        icon: 'folder',
-        id: 'links',
-        children: [
-          {
-            label: '物理机: 192.168.1.100',
-            icon: 'folder',
-            id: 'server-100',
-            children: [
-              { label: '物理机本身: 192.168.1.100', id: 'physical-100' },
-              { label: '虚拟机1: 192.168.10.1', id: 'vm1-100' },
-              { label: '虚拟机2: 192.168.10.2', id: 'vm2-100' },
-            ]
-          },
-          { label: '物理机: 192.168.1.101', id: 'server-101' }
-        ]
-      },
-      {
-        label: '秘钥列表',
-        icon: 'key',
-        id: 'keys',
-        children: [
-          { label: 'Prompt attention', id: 'prompt' },
-          { label: 'Professional waiter', id: 'waiter' }
-        ]
-      },
-    ]
-  }
-];
-
-const flattenTree = (nodes: TreeNode[], level = 0): TreeNode[] => {
-  const result: TreeNode[] = [];
-  nodes.forEach(node => {
-    const nodeWithLevel = { ...node, level };
-    result.push(nodeWithLevel);
-    
-    if (node.children && expandedNodes.value.has(node.id || '')) {
-      result.push(...flattenTree(node.children, level + 1));
-    }
-  });
-  return result;
-};
-
-const flattenedNodes = computed(() => flattenTree(treeData));
+const flattenedNodes = computed(() => documentsStore.flattenTree(props.document.treeData));
 
 const toggleExpand = (node: TreeNode) => {
-  if (!node.children || node.children.length === 0) return;
-  
-  const nodeId = node.id || '';
-  if (expandedNodes.value.has(nodeId)) {
-    expandedNodes.value.delete(nodeId);
-  } else {
-    expandedNodes.value.add(nodeId);
-  }
+  documentsStore.toggleExpand(node);
 };
 
 const isExpanded = (node: TreeNode) => {
-  return expandedNodes.value.has(node.id || '');
+  return documentsStore.isExpanded(node);
 };
 
 const hasChildren = (node: TreeNode) => {
-  return node.children && node.children.length > 0;
+  return documentsStore.hasChildren(node);
 };
 
 const getIcon = (node: TreeNode) => {
-  if (node.icon) return node.icon;
-  if (hasChildren(node)) return 'folder';
-  return 'description';
+  return documentsStore.getIcon(node);
 };
-
 </script>
 
 <template>
