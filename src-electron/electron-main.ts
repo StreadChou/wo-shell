@@ -1,7 +1,11 @@
-import { app, BrowserWindow } from 'electron';
+import {app, BrowserWindow} from 'electron';
 import path from 'path';
 import os from 'os';
-import { fileURLToPath } from 'url'
+import {fileURLToPath} from 'url'
+import {StartListen} from "@stread/sample-electron-preload/main"
+import {LoaderHandler} from "app/src-electron/LoaderHandler";
+import {setMainWindow} from "app/src-electron/app/windowManager";
+
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform();
@@ -16,9 +20,10 @@ async function createWindow() {
    */
   mainWindow = new BrowserWindow({
     icon: path.resolve(currentDir, 'icons/icon.png'), // tray icon
-    width: 1000,
+    width: 1600,
     height: 600,
     useContentSize: true,
+    frame: false,
     webPreferences: {
       contextIsolation: true,
       // More info: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/electron-preload-script
@@ -50,7 +55,12 @@ async function createWindow() {
   });
 }
 
-void app.whenReady().then(createWindow);
+void app.whenReady().then(async () => {
+  StartListen();
+  console.log(`Handler Number: `, LoaderHandler.length)
+  await createWindow();
+  if (mainWindow) setMainWindow(mainWindow);
+});
 
 app.on('window-all-closed', () => {
   if (platform !== 'darwin') {

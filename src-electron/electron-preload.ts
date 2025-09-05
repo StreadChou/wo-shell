@@ -27,3 +27,12 @@
  *   }
  * }
  */
+
+
+import Electron from "electron";
+
+Electron.contextBridge.exposeInMainWorld("Electron", {
+  Request: (route: string, data: any) => Electron.ipcRenderer.invoke("Electron:Request", {route, data}),
+  Send: (route: string, data: any) => Electron.ipcRenderer.send("Electron:Send", {route, data}),
+  On: (route: string, callback: any) => Electron.ipcRenderer.on(route, callback)
+});
