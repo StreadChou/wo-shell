@@ -1,0 +1,39 @@
+{
+  "name": "wo-shell",
+  "version": "0.0.1",
+  "description": "WoShell",
+  "productName": "WoShell",
+  "author": "stread <stread.chou@gmail.com>",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0",
+    "dev": "quasar dev -m electron",
+    "build": "quasar build -m electron",
+    "postinstall": "quasar prepare"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.16.4",
+    "axios": "^1.2.1",
+    "pinia": "^3.0.1",
+    "quasar": "^2.16.0",
+    "ssh2": "^1.17.0",
+    "vue": "^3.4.18",
+    "vue-i18n": "^11.0.0",
+    "vue-router": "^4.0.12"
+  },
+  "devDependencies": {
+    "@intlify/unplugin-vue-i18n": "^4.0.0",
+    "@quasar/app-vite": "^2.1.0",
+    "@types/node": "^20.5.9",
+    "@types/ssh2": "^1.15.5",
+    "autoprefixer": "^10.4.2",
+    "electron": "^38.0.0",
+    "typescript": "~5.5.3"
+  },
+  "engines": {
+    "node": "^28 || ^26 || ^24 || ^22 || ^20 || ^18",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
+}
